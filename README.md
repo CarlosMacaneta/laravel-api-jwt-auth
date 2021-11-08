@@ -1,6 +1,6 @@
-## Store
+## JWT Auth
 
-Store is a simple CRUD api written in PHP with Laravel 8 + Sanctum authentication.
+This is an api written in PHP with Laravel 8 Sanctum with jwt authentication.
 This api was built to guide beginners.
 
 ## Run API
