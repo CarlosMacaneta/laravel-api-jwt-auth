@@ -3,9 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\UserLoginRequest;
 use App\Http\Requests\UserRequest;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Symfony\Component\HttpFoundation\Response;
 
 class AuthController extends Controller
 {
@@ -20,5 +23,28 @@ class AuthController extends Controller
         ]);
     }
 
+    public function login(UserLoginRequest $request)
+    {
+        $data = $request->validated();
+
+        if (!Auth::attempt(['email' => $data['email'], 'password' => $data['password']])) {
+            return response([
+                'message' => 'Your credentials are incorrect.'
+            ], Response::HTTP_UNAUTHORIZED);
+        }
+
+        $user = Auth::user();
+
+        $token = $user->createToken('Bearer')->plainTextToken;
+
+        $cookie = cookie('jwt', $token, 60 * 24);
+
+        return response(['message' => 'Success'])->withCookie($cookie);
+    }
+
+    public function user()
+    {
+        return Auth::user();
+    }
 
 }
